@@ -1,4 +1,4 @@
-# NCOMMS-19-24818
+# Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction (NCOMMS-19-24818)
 
 Repository of codes used in the paper "Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction" (NCOMMS-19-24818).
 
@@ -12,7 +12,7 @@ All the codes and pipelines used for Hi-C data analysis and visualization are op
 
 ## scRNA-seq
 
-Two scripts were used for single-cell RNA-seq analysis, a bash script to run cellranger from 10X Genomics and an R script to run Seurat functions for data analysis and visualization:
+Two scripts were used for single-cell RNA-seq analysis, a bash script to run cellranger from 10X Genomics, and an R script to run Seurat functions for data analysis and visualization:
 
 - [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh)
 - [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r)

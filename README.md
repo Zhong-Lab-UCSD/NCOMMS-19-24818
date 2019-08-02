@@ -7,7 +7,7 @@ Repository of codes used in the paper "Dynamic changes in RNA-chromatin interact
 
 ## Hi-C
 
-All the codes and pipelines used for Hi-C data analysis and visualization are open source and available from the published software **[HiCtool (v2.1)](https://github.com/Zhong-Lab-UCSD/HiCtool)**.
+All the codes and pipelines used for Hi-C data analysis and visualization are open source and available from the published software [HiCtool (v2.1)](https://github.com/Zhong-Lab-UCSD/HiCtool).
 
 
 ## scRNA-seq

@@ -3,7 +3,7 @@
 
 from optparse import OptionParser
 
-chromosomes = {'hg38':{'1':93,
+chromosomes = {'SE':{'1':93,
                    '2':58,
                    '3':76,
                    '4':23,

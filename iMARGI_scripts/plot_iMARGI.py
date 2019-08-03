@@ -28,7 +28,7 @@ chromosomes = {'hg38':{'1':248956422,
                    '22':50818468,
                    'X':156040895,
                    'Y':57227415},
-                   'mm10':{'1':195471971,
+                'mm10':{'1':195471971,
                    '2':182113224,
                    '3':160039680,
                    '4':156508116,
@@ -48,7 +48,30 @@ chromosomes = {'hg38':{'1':248956422,
                    '18':90702639,
                    '19':61431566,
                    'X':171031299,
-                   'Y':91744698}}  
+                   'Y':91744698},
+                'SE':{'1':93,
+                   '2':58,
+                   '3':76,
+                   '4':23,
+                   '5':60,
+                   '6':55,
+                   '7':42,
+                   '8':43,
+                   '9':41,
+                   '10':50,
+                   '11':41,
+                   '12':53,
+                   '13':18,
+                   '14':26,
+                   '15':27,
+                   '16':27,
+                   '17':33,
+                   '18':15,
+                   '19':26,
+                   '20':26,
+                   '21':13,
+                   '22':22,
+                   'X':7}}  
 
 parameters = {'inputFile': None,
               'outputFile': None,
@@ -80,7 +103,10 @@ def extract_single_map(parameters):
     
     print "Extracting contact map chr" + chr_row + ' x chr' + chr_col + '...'
     if species in chromosomes.keys():
-        chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X', 'Y']
+        if species != "SE":
+            chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X', 'Y']
+        else:
+            chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X']
         chr_dim = []
         for i in chromosomes_list:
             chr_dim.append(chromosomes[species][i]/bin_size + 1) # + 1 is to take into account of the additional "final bin"

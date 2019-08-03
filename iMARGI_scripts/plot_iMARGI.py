@@ -1,11 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-import sys
 from optparse import OptionParser
-import os
 import numpy as np
-import pandas as pd
 
 chromosomes = {'hg38':{'1':248956422,
                    '2':242193529,
@@ -68,65 +65,18 @@ parameters = {'inputFile': None,
               'cutoff': None,
               'max_color': None,
               'my_dpi': None,
-              'MSTD': None,
-              'symmetry': None,
-              'domain_color': None,
               'scale_factor': None,
               }
 
-def save_matrix_space(input_matrix, output_filename):
-    """
-    Save a contact matrix in a txt file in a tab separated format. Columns are
-    separated by tabs, rows are in different lines.
-    Arguments:
-        input_matrix (numpy matrix): input contact matrix to be saved
-        output_filename (str): output file name in txt format
-    Output:
-        txt file containing the space separated data
-    """
-    import numpy as np
-    rows = np.shape(input_matrix)[0]
-    with open (output_filename, 'w') as f:
-            for i in xrange(rows):
-                row = [str(j) for j in input_matrix[i]]
-                f.write(' '.join(row) + '\n')
-                    
 
-def convert_from_matrix_to_txt(input_file, output_txt):
-    import numpy as np
-    input_matrix = open(input_file, 'r')
-    input_matrix_list = []
-    while True:
-        try:
-            line2list = next(input_matrix).split('\n')[0].split('\r')[0].split('\t')
-            input_matrix_list.append(line2list[1:])
-        except StopIteration:
-            break
-    input_matrix_array = np.array(input_matrix_list[1:]).astype(np.float)
-    save_matrix_space(input_matrix_array,output_txt)
-    
-    
-def convert_from_tab_to_txt(input_file, output_txt):
-    import numpy as np
-    input_matrix = open(input_file, 'r')
-    input_matrix_list = []
-    while True:
-        try:
-            line2list = next(input_matrix).split('\n')[0].split('\r')[0].split('\t')
-            input_matrix_list.append(line2list)
-        except StopIteration:
-            break
-    input_matrix_array = np.array(input_matrix_list).astype(np.float)
-    save_matrix_space(input_matrix_array,output_txt)
-
-   
 def extract_single_map(parameters):
-    
+    """
+    Extract single contact matrix from global all-by-all chromosomes matrix.
+    """
     chr_row = parameters['chr_row']
     chr_col = parameters['chr_col']
     species = parameters['species']
     bin_size = int(parameters['bin_size'])
-    data_type = parameters["data_type"]
     
     print "Extracting contact map chr" + chr_row + ' x chr' + chr_col + '...'
     if species in chromosomes.keys():
@@ -159,7 +109,6 @@ def extract_single_map(parameters):
     
     input_matrix = open(parameters['inputFile'], 'r')
     input_matrix_list = []
-    #input_matrix_list_to_save = []
     while True:
         try:
             line2list = next(input_matrix).split('\n')[0].split('\r')[0].split('\t')
@@ -182,36 +131,18 @@ def extract_single_map(parameters):
     col_end = col_start + d_chr_dim[chr_col]
     
     output_matrix = input_matrix_array[row_start:row_end,col_start:col_end]
-    
-    if chr_row == chr_col:
-        if bin_size >= 1000000:
-            bin_size_str = str(bin_size/1000000)
-            my_filename = 'iMARGI_' 'chr' + chr_row + '_' + bin_size_str + 'mb_' + data_type + '.txt'
-        elif bin_size < 1000000:
-            bin_size_str = str(bin_size/1000)
-            my_filename = 'iMARGI_' 'chr' + chr_row + '_' + bin_size_str + 'kb_' + data_type + '.txt'
-        save_matrix_space(output_matrix, my_filename)
-    else:
-        if bin_size >= 1000000:
-            bin_size_str = str(bin_size/1000000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + data_type + '.txt'
-        elif bin_size < 1000000:
-            bin_size_str = str(bin_size/1000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + data_type + '.txt'
-        save_matrix_space(output_matrix, my_filename)
-    print "Done!"
     return output_matrix
 
 
-def plot_iMARGI_matrix (parameters):
+def plot_iMARGI_matrix(parameters):
+    """
+    Plot iMARGI contact matrix.
+    """
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.colors import LinearSegmentedColormap
     import numpy as np
-    from matplotlib import rcParams
-    
-    #rcParams['font.family'] = 'arial'
     
     isGlobal = bool(int(parameters['isGlobal']))
     chr_row = parameters['chr_row']
@@ -304,8 +235,8 @@ def plot_iMARGI_matrix (parameters):
         print str(np.sum(matrix_data_full))
         print "Done!"
         print "Plotting " + parameters["inputFile"] + '...'
-        # Adding grid to separate chromosomes
         
+        # Adding grid to separate chromosomes  
         k=0
         for i in chromosomes_list[:-1]:
             for j in range(grid_width):
@@ -386,63 +317,6 @@ def plot_iMARGI_matrix (parameters):
             bin_size_str = str(bin_size/1000) + 'kb'
             my_filename = 'iMARGI_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + data_type
         
-        #### Update matrix values to plot topological domains
-        if parameters['MSTD'] != None:
-#            if chr_row != chr_col:
-#                print "ERROR! To plot topological domains the matrix should be intrachromosomal."
-#                return
-            
-            ### previous domains code
-#            domains_file = open(parameters['MSTD'], 'r')
-#            domains = []
-#            while True:
-#                try:
-#                    line2list = next(domains_file).split('\n')[0].split('\t')
-#                    domains.append([int(x) for x in line2list])
-#                except StopIteration:
-#                    break
-#            my_filename = my_filename + '_domains'
-#            diag_index = np.diag_indices(len(matrix_data_full))
-#            for domain in domains:
-#                temp_start = domain[0]/bin_size
-#                temp_end = domain[1]/bin_size
-#                matrix_data_full[temp_start,temp_start:temp_end] = -1
-#                matrix_data_full[temp_start:temp_end,temp_end-1] = -1
-#                matrix_data_full[(diag_index[0][temp_start:temp_end],diag_index[1][temp_start:temp_end])] = -1
-            
-            ### MSTD code
-            row = np.shape(matrix_data_full)[0]
-            col = np.shape(matrix_data_full)[1]
-            domains_file = pd.read_csv(parameters['MSTD'], sep='\t')
-            my_filename = my_filename + '_domains'
-            if parameters["symmetry"] == 1:
-                for index, table_row in domains_file.iterrows():
-                    Start = table_row["Start"]
-                    End = table_row["End"]
-                    # line at top of the domain
-                    matrix_data_full[Start,Start:End] = -1
-                    # line at bottom of the domain
-                    matrix_data_full[End,Start:End+1] = -1
-                    # line on left of the domain
-                    matrix_data_full[Start:End,Start] = -1
-                    # line on right of the domain
-                    matrix_data_full[Start:End+1,End] = -1
-            if parameters["symmetry"] == 2:
-                for index, table_row in domains_file.iterrows():
-                    upper = table_row["upper"]
-                    bottom = table_row["bottom"]
-                    right = table_row["right"]
-                    left = table_row["left"]
-                    # line at top of the domain
-                    matrix_data_full[upper,left:right] = -1
-                    # line at bottom of the domain
-                    matrix_data_full[bottom,left:right+1] = -1
-                    # line on left of the domain
-                    matrix_data_full[upper:bottom,left] = -1
-                    # line on right of the domain
-                    matrix_data_full[upper:bottom+1,right] = -1
-
-        
         #### Selecting a part of a single heatmap
         if parameters['select_part_map'] != None:
             select_part_map =  map(int, parameters['select_part_map'].strip('[]').split(','))
@@ -489,39 +363,21 @@ def plot_iMARGI_matrix (parameters):
         if parameters['cutoff_type'] != None:
             cutoff = float(parameters['cutoff'])
         max_color = parameters['max_color']
-        domain_color = parameters['domain_color']
         
         if cutoff_type == 'perc':
             perc = np.percentile(output_vect[non_zero[0]],cutoff)
-            if parameters['MSTD'] == None:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-                cbar = plt.colorbar(extend='max')
-                cbar.cmap.set_over(max_color)
-            else:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc, vmin=0)
-                cbar = plt.colorbar(extend='max')
-                cbar.cmap.set_over(max_color)
-                cbar.cmap.set_under(domain_color)
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
+            cbar = plt.colorbar(extend='max')
+            cbar.cmap.set_over(max_color)
         elif cutoff_type == 'contact':
             perc = cutoff 
-            if parameters['MSTD'] == None:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-                cbar = plt.colorbar(extend='max')
-                cbar.cmap.set_over(max_color)
-            else:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc, vmin=0)
-                cbar = plt.colorbar(extend='max')
-                cbar.cmap.set_over(max_color)
-                cbar.cmap.set_under(domain_color)
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
+            cbar = plt.colorbar(extend='max')
+            cbar.cmap.set_over(max_color)
         elif cutoff_type == None:
-            if parameters['MSTD'] == None:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
-                cbar = plt.colorbar()
-            else:
-                plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmin=0)
-                cbar = plt.colorbar()
-                cbar.cmap.set_under(domain_color)
-        
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
+            cbar = plt.colorbar()
+
         plt.title(data_type + ' map (' + bin_size_str + ')', fontsize=12)
         cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
         plt.ylabel(chromosome_row + ' coordinate (bp)', fontsize=10)
@@ -551,7 +407,6 @@ def plot_iMARGI_matrix (parameters):
         print "Done!"
       
 
-
 if __name__ == '__main__':
     usage='usage: python2.7 plot_iMARGI.py [options]'
     parser = OptionParser( usage = 'python2.7  %prog  -i inputFile -o outputFile --isGlobal --chr_row --chr_col --bin_size --select_part_map --data_type --species --custom_species --my_colormap --cutoff_type --cutoff --max_color --my_dpi --MSTD --domain_color')
@@ -570,9 +425,6 @@ if __name__ == '__main__':
     parser.add_option(      '--cutoff' , dest='cutoff', default='95', type='str', help='If you are using a cutoff, insert here the cutoff (percentile as for example 99 for the 99th percentile or the number of contacts). Default: 95')
     parser.add_option(      '--max_color' , dest='max_color', default='#460000', type='str', help='If you use a cutoff, the color for the pixels above the cutoff.')
     parser.add_option(      '--my_dpi' , dest='my_dpi', default='2000', type='str', help='The resolution of the output figure in dpi (default 2000).')
-    parser.add_option(      '--MSTD' , dest='MSTD', type='str', help='Topological domains file in tab separated format with two columns. Each line is a domain and the first column is start coordinate, the second column is end coordinate.')
-    parser.add_option(      '--symmetry' , dest='symmetry', type='int', help='Insert 1 for MSTD along the diagonal, 2 for domains not along the diagonal (see MSTD documentation).')
-    parser.add_option(      '--domain_color' , dest='domain_color', default='#0000ff', type='str', help='Color to plot the topological domains overt the heatmap: default blue.')
     parser.add_option(      '--scale_factor' , dest='scale_factor', type='float', help='Scaling multiplicative factor to plot the heatmap.')
 
     (options, args) = parser.parse_args( )
@@ -597,9 +449,6 @@ if __name__ == '__main__':
     parameters['cutoff'] = options.cutoff
     parameters['max_color'] = options.max_color
     parameters['my_dpi'] = options.my_dpi
-    parameters['MSTD'] = options.MSTD
-    parameters['symmetry'] = options.symmetry
-    parameters['domain_color'] = options.domain_color
     parameters['scale_factor'] = options.scale_factor
 
     plot_iMARGI_matrix(parameters)

@@ -6,11 +6,11 @@ Repository of codes used in the paper "Dynamic changes in RNA-chromatin interact
 
 Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_pipeline/). Data analysis and visualization has been done using the following scripts:
 
-- [``HUVEC_iMARGI.r``](./iMARGI_scripts/HUVEC_iMARGI.r) is the main R script used for analyzing and parsing data in order to generate data structures suitable for network or heatmap plotting.
-- [``plot_network_function.r``](./iMARGI_scripts/plot_network_function.r) contains a custom function built in-house using exploiting the R package igraph in order to plot and customize super enhancer networks, such as node dimension, color, labels, edge width, etc. The function is called in the main script ``HUVEC_iMARGI.r``.
+- [``HUVEC_iMARGI.r``](./iMARGI_scripts/HUVEC_iMARGI.r) is the main R script used for analyzing and parsing data in order to generate data structures suitable for network or heatmap plotting and generating data summary or reports.
+- [``plot_network_function.r``](./iMARGI_scripts/plot_network_function.r) contains a custom function built in-house exploiting the R package igraph in order to plot and customize super enhancer networks, such as node dimension, color, labels, edge width, etc. The function is called in the main script ``HUVEC_iMARGI.r``.
 - [``plot_iMARGI.py``](./iMARGI_scripts/plot_iMARGI.py) used to plot iMARGI heatmaps.
 - [``plot_iMARGI_SE_time.py``](./iMARGI_scripts/plot_iMARGI_SE_time.py) used to plot iMARGI super enhancer heatmap (SE x SE contact map) with the three samples on a side-by-side view.
-- [``plot_iMARGI_maps.sh``](./iMARGI_scripts/plot_iMARGI_maps.sh) is a bash script used to run the two python scripts above for plotting.
+- [``plot_iMARGI_maps.sh``](./iMARGI_scripts/plot_iMARGI_maps.sh) is a bash script used to run the two python scripts above for plotting iMARGI heatmaps.
 
 
 ## Hi-C
@@ -20,7 +20,7 @@ All the codes used for Hi-C data analysis and visualization are open source and 
 
 ## scRNA-seq
 
-Two scripts were used for single-cell RNA-seq analysis, a bash script to run cellranger from 10X Genomics, and an R script to run Seurat functions for data analysis and visualization:
+Two scripts were used for single-cell RNA-seq analysis:
 
-- [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh)
-- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r)
+- [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh) is a bash script to run cellranger from 10X Genomics.
+- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r) is the main R script used for data analysis and visualization, using functions from the package Seurat (2.3.4).

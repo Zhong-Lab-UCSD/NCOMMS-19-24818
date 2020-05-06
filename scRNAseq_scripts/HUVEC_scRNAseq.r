@@ -176,7 +176,7 @@ rownames(tsne_coord) = cell_labels
 write.table(tsne_coord,"/dataOS/rcalandrelli/MARGI/RNAseq_02152019/result/tsne_coordinates.txt", row.names = T, col.names = T, sep = '\t', quote = F)
 
 ### Plot with PCA and t-SNE
-pdf("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure1b-c.pdf", width = 16, height = 6)
+pdf("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure_1b-c.pdf", width = 16, height = 6)
 p1 <-TSNEPlot(sc_full_data, do.return = T, pt.size = 0.5, group.by = "sample") + 
   theme(text = element_text(size=32),
         axis.text.x = element_text(size=32),
@@ -199,7 +199,7 @@ write.table(heatmap_intensities,"/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/M
 p<-FeaturePlot(object = sc_full_data, features.plot = features_to_plot, nCol = 4,
                min.cutoff = "q10", max.cutoff = "q90", cols.use = c("white", "red"), pt.size = 0.5,
                dark.theme = TRUE, no.legend = FALSE, do.return = T)
-png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure1e.png", width = 15, height = 10, units = "in", res = 300)
+png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure_1e.png", width = 15, height = 10, units = "in", res = 300)
 print(p)
 dev.off()
 
@@ -365,7 +365,7 @@ temp[which(temp > 2.5, arr.ind = T)] = 2.5
 
 write.table(temp,"/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/heatmap_binned_100.txt", row.names = T, col.names = T, sep="\t", quote = F)
 
-png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure1d.png", height=15, width=10, units = "in", res=300)
+png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure_1d.png", height=15, width=10, units = "in", res=300)
 pheatmap(temp,
          color = colorRampPalette(c("blue", "yellow"))(100),
          cluster_rows=FALSE,
@@ -622,7 +622,7 @@ temp[which(temp$gene == "SERPINE1"),"gene_label"] = "SERPINE1"
 temp[which(temp$gene == "RUNX1"),"gene_label"] = "RUNX1"
 temp[which(temp$gene == "TRIO"),"gene_label"] = "TRIO"
 
-png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure5b.png", height=1000, width=1000, units = "px", res = 200)
+png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure_5b.png", height=1000, width=1000, units = "px", res = 200)
 ggplot(temp, aes(x=0, y=odds_ratio)) + 
   geom_violin() +
   geom_point(position = position_jitter(0.3), aes(shape = gene_label), size = 2) +

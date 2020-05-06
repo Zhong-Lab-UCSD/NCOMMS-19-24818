@@ -485,7 +485,7 @@ temp[which(temp$gene == "SERPINE1"),"gene_label"] = "SERPINE1"
 temp[which(temp$gene == "RUNX1"),"gene_label"] = "RUNX1"
 temp[which(temp$gene == "TRIO"),"gene_label"] = "TRIO"
 
-png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_human_vascular/result/Figure5c.png", height=1000, width=1000, units = "px", res = 200)
+png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_human_vascular/result/Figure_5c.png", height=1000, width=1000, units = "px", res = 200)
 ggplot(temp, aes(x=0, y=odds_ratio)) + 
   geom_violin() +
   geom_point(position = position_jitter(0.3), aes(shape = gene_label), size = 2) +

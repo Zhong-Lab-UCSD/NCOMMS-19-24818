@@ -1,6 +1,6 @@
 # Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction (NCOMMS-19-24818)
 
-Repository of in-house codes used in the paper "Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction" (NCOMMS-19-24818).
+Repository of in-house codes and useful files used in the paper "Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction".
 
 ## iMARGI
 
@@ -15,7 +15,9 @@ Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_p
 
 ## Hi-C
 
-All the codes used for Hi-C data analysis and visualization are open source and available from the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool).
+Hi-C data analysis and visualization were mainly performed using the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool). [``HUVEC_hictool_downsampled.sh``](./hic_scripts/HUVEC_hictool_downsampled.sh) contains the HiCtool commands for: pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
+
+General Hi-C data statistics, Measure of Concordance of TAD boundaries between samples, average interaction frequency at each genomic distance curves, proportion of reads mapped within TADs, were calculated using the R script [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r).
 
 
 ## scRNA-seq

@@ -9,10 +9,10 @@ fastq_dir="/dataOS/rcalandrelli/MARGI/RNAseq_02152019/fastq"
 
 for i in $(find $fastq_dir -maxdepth 1 -mindepth 1 -type d -printf '%f\n'); do
 	cellranger count --id="count_""$i" \
-	--transcriptome=/dataOS/rcalandrelli/Software/refdata-cellranger-GRCh38-3.0.0 \
-	--fastqs=/dataOS/rcalandrelli/MARGI/RNAseq_02152019/fastq/"$i" \
-	--sample="$i" \
-	--localcores=24
+		--transcriptome=/dataOS/rcalandrelli/Software/refdata-cellranger-GRCh38-3.0.0 \
+		--fastqs=/dataOS/rcalandrelli/MARGI/RNAseq_02152019/fastq/"$i" \
+		--sample="$i" \
+		--localcores=24
 done
 
 ### Unzip matrices files
@@ -31,11 +31,11 @@ cd $counts_dir
 fastq_dir="/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_human_vascular/fastq"
 
 for i in $(find $fastq_dir -maxdepth 1 -mindepth 1 -type d -printf '%f\n'); do
-cellranger count --id="count_""$i" \
---transcriptome=/dataOS/rcalandrelli/Software/refdata-cellranger-GRCh38-3.0.0 \
---fastqs=/dataOS/rcalandrelli/MARGI/RNAseq_human_vascular/fastq/"$i" \
---sample="$i" \
---localcores=24
+	cellranger count --id="count_""$i" \
+		--transcriptome=/dataOS/rcalandrelli/Software/refdata-cellranger-GRCh38-3.0.0 \
+		--fastqs=/dataOS/rcalandrelli/MARGI/RNAseq_human_vascular/fastq/"$i" \
+		--sample="$i" \
+		--localcores=24
 done
 
 ### Unzip matrices files

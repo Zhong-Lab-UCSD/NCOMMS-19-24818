@@ -15,16 +15,17 @@ Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_p
 
 ## Hi-C
 
-Hi-C data analysis and visualization were mainly performed using the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool). [``HUVEC_hictool.sh``](./hic_scripts/HUVEC_hictool.sh) contains the HiCtool commands for: pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
+Hi-C data analysis and visualization were mainly performed using the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool). These scripts were used for Hi-C data analysis:
 
-General Hi-C data statistics, Measure of Concordance (MoC) of TAD boundaries between samples, average interaction frequency by genomic distance curves, proportion of reads mapped within TADs, were calculated using the R script [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r).
+- [``HUVEC_hictool.sh``](./hic_scripts/HUVEC_hictool.sh) is a bash script which contains the HiCtool commands for: pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
+- [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r) is used to calculate general Hi-C data statistics, Measure of Concordance (MoC) of TAD boundaries between samples, average interaction frequency by genomic distance curves, and proportion of reads mapped within TADs.
 
 
 ## RNA-seq
 
 These scripts were used for RNA-seq analysis:
 
-- [HUVEC_RNAseq.sh](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job and ``featureCounts``, to obtain the input data for DESeq2 in R.
+- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job and ``featureCounts``, to obtain the raw counts to input in DESeq2.
 - [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from the package [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) to perform RNA-seq analysis.
 
 

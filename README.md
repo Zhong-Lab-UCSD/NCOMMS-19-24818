@@ -1,6 +1,6 @@
 # Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction (NCOMMS-19-24818)
 
-Repository of codes used in the paper "Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction" (NCOMMS-19-24818).
+Repository of in-house codes used in the paper "Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction" (NCOMMS-19-24818).
 
 ## iMARGI
 
@@ -15,12 +15,13 @@ Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_p
 
 ## Hi-C
 
-All the codes used for Hi-C data analysis and visualization are open source and available from the published software [HiCtool (v2.1)](https://github.com/Zhong-Lab-UCSD/HiCtool).
+All the codes used for Hi-C data analysis and visualization are open source and available from the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool).
 
 
 ## scRNA-seq
 
-Two scripts were used for single-cell RNA-seq analysis:
+These scripts were used for single-cell RNA-seq analysis:
 
-- [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh) is a bash script used to run [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) from 10X Genomics.
-- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r) is the main R script used for data analysis and visualization, based on functions from the package [Seurat (2.3.4)](https://satijalab.org/seurat/).
+- [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh) is a bash script used to run [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) from 10X Genomics both for in vitro and in vivo models.
+- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r) is the main R script used for data analysis and visualization of the **in VITRO model**, based on functions from the package [Seurat (2.3.4)](https://satijalab.org/seurat/).
+- [``HUVEC_scRNAseq_human_vascular.r``](./scRNAseq_scripts/HUVEC_scRNAseq_human_vascular.r) is the main R script used for data analysis and visualization of the **in VIVO model**, based on functions from the package [Seurat (2.3.4)](https://satijalab.org/seurat/).

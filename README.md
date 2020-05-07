@@ -23,19 +23,19 @@ Hi-C data analysis and visualization were mainly performed using the published s
 
 ## RNA-seq
 
-These scripts were used for RNA-seq analysis:
+RNA-seq analysis was mainly performed using the R package [DESeq2 (v1.24.0)](https://bioconductor.org/packages/release/bioc/html/DESeq2.html). These scripts were used for RNA-seq analysis:
 
-- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job and ``featureCounts``, to obtain the raw counts to input in DESeq2.
-- [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from the package [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) to perform RNA-seq analysis.
+- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job performed with [STAR v(2.5.4b)](https://github.com/alexdobin/STAR) and ``featureCounts`` from the [Subread package (v2.0.0)](http://subread.sourceforge.net/), to obtain the raw counts to input in DESeq2.
+- [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from DESeq2 to perform RNA-seq analysis.
 
 
 ## scRNA-seq
 
-These scripts were used for single-cell RNA-seq analysis:
+scRNA-seq analysis was mainly performed using the R package [Seurat (v2.3.4)](https://satijalab.org/seurat/). These scripts were used for single-cell RNA-seq analysis:
 
 - [``cellranger.sh``](./scRNAseq_scripts/cellranger.sh) is a bash script used to run [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/count) from 10X Genomics both for in vitro and in vivo models.
-- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r) is the main R script used for data analysis and visualization of the **in VITRO model**, based on functions from the package [Seurat (2.3.4)](https://satijalab.org/seurat/).
-- [``HUVEC_scRNAseq_human_vascular.r``](./scRNAseq_scripts/HUVEC_scRNAseq_human_vascular.r) is the main R script used for data analysis and visualization of the **in VIVO model**, based on functions from the package [Seurat (2.3.4)](https://satijalab.org/seurat/).
+- [``HUVEC_scRNAseq.r``](./scRNAseq_scripts/HUVEC_scRNAseq.r) is the main R script used for data analysis and visualization of the **in VITRO model**, based on functions from Seurat.
+- [``HUVEC_scRNAseq_human_vascular.r``](./scRNAseq_scripts/HUVEC_scRNAseq_human_vascular.r) is the main R script used for data analysis and visualization of the **in VIVO model**, based on functions from Seurat.
 
 
 

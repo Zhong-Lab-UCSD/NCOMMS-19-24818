@@ -25,7 +25,7 @@ Hi-C data analysis and visualization were mainly performed using the published s
 
 RNA-seq analysis was mainly performed using the R package [DESeq2 (v1.24.0)](https://bioconductor.org/packages/release/bioc/html/DESeq2.html). These scripts were used for RNA-seq analysis:
 
-- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job performed with [STAR v(2.5.4b)](https://github.com/alexdobin/STAR) and ``featureCounts`` from the [Subread package (v2.0.0)](http://subread.sourceforge.net/), to obtain the raw counts to input in DESeq2.
+- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job performed with [STAR (v2.5.4b)](https://github.com/alexdobin/STAR) and ``featureCounts`` from the package [Subread (v2.0.0)](http://subread.sourceforge.net/), to obtain the raw counts to input in DESeq2.
 - [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from DESeq2 to perform RNA-seq analysis.
 
 

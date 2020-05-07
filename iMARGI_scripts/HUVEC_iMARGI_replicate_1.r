@@ -167,6 +167,39 @@ SE_index_new = seq(1,nrow(super_enhancers_sort_annotated_new))
 super_enhancers_sort_annotated_new = cbind(super_enhancers_sort_annotated_new,labels_new,SE_index_new)
 colnames(super_enhancers_sort_annotated_new)[1:3] = c("SE_chr","SE_start","SE_end")
 
+### Add field to show if a super enhancer contains only NC RNAs or not
+non_coding_RNAs_category = c("snoRNA","snRNA","misc_RNA","antisense","miRNA","lincRNA","processed_transcript","pseudogene")
+
+find_only_nc_RNAs_within_SE <- function(x){
+  genes_within_se = strsplit(x["SE_genes"],";")[[1]]
+  temp_annotation = annotation[which(annotation$gene_name %in% genes_within_se),"gene_biotype"]
+  temp_annotation[grepl("pseudogene",temp_annotation)] = "pseudogene"
+  if (sum(temp_annotation %in% non_coding_RNAs_category) == length(temp_annotation)){
+    return(1)
+  } else {
+    return(0)
+  }
+}
+
+# only_nc_rna=(0,1,2)
+# 0 --> only_nc_rna = F
+# 1 --> only_nc_rna = T
+# 2 --> no genes at all
+super_enhancers_sort_annotated_new$only_nc_rna = apply(super_enhancers_sort_annotated_new,1,find_only_nc_RNAs_within_SE)
+super_enhancers_sort_annotated_new[which(super_enhancers_sort_annotated_new$SE_genes == "."),"only_nc_rna"] = 2
+
+### Add field to show if a SE overlaps with at least one lincRNA
+find_at_least_one_lincRNA_within_SE <- function(x){
+  genes_within_se = strsplit(x["SE_genes"],";")[[1]]
+  temp_annotation = annotation[which(annotation$gene_name %in% genes_within_se),"gene_biotype"]
+  if ("lincRNA" %in% temp_annotation){
+    return(1)
+  } else {
+    return(0)
+  }
+}
+super_enhancers_sort_annotated_new$lincRNA = apply(super_enhancers_sort_annotated_new,1,find_at_least_one_lincRNA_within_SE)
+
 Gr_super_enhancers_sort_annotated_new <- GRanges(
   seqnames = Rle(super_enhancers_sort_annotated_new[,1]),
   ranges = IRanges(as.numeric(super_enhancers_sort_annotated_new[,2]), end = as.numeric(super_enhancers_sort_annotated_new[,3]), names = c(1:nrow(super_enhancers_sort_annotated_new))),
@@ -185,7 +218,7 @@ hg38_chromosomes = c(paste0('chr',c(1:22)),c('chrX','chrY','chrM')) # UCSC
 
 data_file <- read.table(paste0(directory,'/annot_exonsIntrons.txt'), stringsAsFactors = F)
 data_file <- data_file[which(data_file[,1] %in% hg38_chromosomes & data_file[,5] %in% hg38_chromosomes),]
-#nrow(data_file[which(data_file[,1]!=data_file[,5]),])
+#nrow(data_file[which(data_file[,1]!=data_file[,5]),]) # to check how many inter-chromosomal read pairs
 
 Gr_data_file_RNA <- GRanges(
   seqnames = Rle(data_file[,1]),
@@ -209,6 +242,49 @@ Gr_data_file_DNA <- GRanges(
   annotation_RNA = data_file[,9],
   annotation_DNA = data_file[,10])
 
+### Enhancer analysis
+enhancers = read.table("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/super_enhancers_call/HUVEC/HUVEC_enhancers_hg38.bed", stringsAsFactors = F)
+enhancers = enhancers[which(enhancers[,1] %in% hg38_chromosomes),] # 120382426 total length enhancers
+Gr_enhancers = GRanges(
+  seqnames = Rle(enhancers[,1]),
+  ranges = IRanges(enhancers[,2], end = enhancers[,3], names = c(1:nrow(enhancers))),
+  strand = Rle(strand('*')))
+
+overlaps_RNA = countOverlaps(Gr_data_file_RNA,Gr_enhancers, ignore.strand=T)
+mcols(Gr_data_file_RNA)["overlap_enhancer"] = overlaps_RNA
+Gr_data_file_RNA_enhancer = Gr_data_file_RNA[mcols(Gr_data_file_RNA)[,"overlap_enhancer"] >= 1]
+length(Gr_data_file_RNA_enhancer) # to extract the number of pairs with RNA end over super enhancers
+
+overlaps_DNA = countOverlaps(Gr_data_file_DNA,Gr_enhancers, ignore.strand=T)
+mcols(Gr_data_file_DNA)["overlap_enhancer"] = overlaps_DNA
+Gr_data_file_DNA_enhancer = Gr_data_file_DNA[mcols(Gr_data_file_DNA)[,"overlap_enhancer"] >= 1]
+length(Gr_data_file_DNA_enhancer) # to extract the number of pairs with RNA end over super enhancers
+
+pairs_in_enhancers = intersect(names(Gr_data_file_RNA_enhancer),names(Gr_data_file_DNA_enhancer))
+length(pairs_in_enhancers) # to extract the number of pairs over enhancers
+
+### Super enhancers (all 912)
+super_enhancers <- read.table('/dataOS/rcalandrelli/MARGI/HUVEC_20180613_library2_control_igm/SE_huvec_hg38.bed', stringsAsFactors = FALSE)
+colnames(super_enhancers) = c('SE_chr','SE_start','SE_end','SE_id','SE_num')
+
+Gr_super_enhancers <- GRanges(
+  seqnames = Rle(super_enhancers[,1]),
+  ranges = IRanges(as.numeric(super_enhancers[,2]), end = as.numeric(super_enhancers[,3]), names = c(1:nrow(super_enhancers))),
+  strand = Rle(strand('*')),
+  SE_id = as.character(super_enhancers[,4]))
+
+overlaps_RNA = countOverlaps(Gr_data_file_RNA,Gr_super_enhancers, ignore.strand=T)
+mcols(Gr_data_file_RNA)["overlap_se_old"] = overlaps_RNA
+Gr_data_file_RNA_se_old = Gr_data_file_RNA[mcols(Gr_data_file_RNA)[,"overlap_se_old"] >= 1]
+out_9 = length(Gr_data_file_RNA_se_old)
+
+overlaps_DNA = countOverlaps(Gr_data_file_DNA,Gr_super_enhancers, ignore.strand=T)
+mcols(Gr_data_file_DNA)["overlap_se_old"] = overlaps_DNA
+Gr_data_file_DNA_se_old = Gr_data_file_DNA[mcols(Gr_data_file_DNA)[,"overlap_se_old"] >= 1]
+length(Gr_data_file_DNA_se_old)
+
+pairs_in_SE_old = intersect(names(Gr_data_file_RNA_se_old),names(Gr_data_file_DNA_se_old))
+length(pairs_in_SE_old) # to extract the number of pairs over super enhancers
 
 ### Heatmap SEs x SEs where each entry is the number of RNA-DNA pairs falling withing the correspondend SEs
 

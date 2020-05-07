@@ -2,27 +2,11 @@
 
 hg38_chromosomes = c(paste0('chr',c(1:22)),c('chrX','chrY','chrM')) # UCSC
 
-### Read downsampled data and stats
-directory = '/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/control_downsampled'
-directory = '/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day3_downsampled'
-directory = '/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day7_downsampled'
-
-hg38_chromosomes = c(paste0('chr',c(1:22)),c('chrX','chrY','chrM')) # UCSC
-
-data_file <- read.table(paste0(directory,'/HiCfile_paired.bedpe'), stringsAsFactors = F)
-data_file <- data_file[which(data_file[,1] %in% hg38_chromosomes & data_file[,4] %in% hg38_chromosomes),]
-nrow(data_file)
-nrow(data_file[which(data_file[,1]==data_file[,4]),])
-
-# Day 0: 64942544; intra = 59282163; inter = 5660381
-# Day 3: 64710653 intra = 58262655; inter = 6447998
-# Day 7: 56396995 intra = 52332121; inter = 4064874
-
 ##### Plot summary of coverage inter vs intra
 sample=rep(c("0", "3", "7"), 2)
 feature=c(rep("Intra" , 3), rep("Inter" , 3))
-value=c(59282163/64942544, 58262655/64710653, 52332121/56396995, 
-        5660381/64942544, 6447998/64710653, 4064874/56396995)
+value=c(172897716/186661191, 183479138/200746376, 99736000/106348319, 
+        13763475/186661191, 17267238/200746376, 6612319/106348319)
 data_hic = data.frame(sample,feature,value)
 data_hic$feature <- factor(data_hic$feature, levels = c("Intra", "Inter"))
 
@@ -42,6 +26,8 @@ ggplot(data_hic, aes(fill=feature, y=value, x=sample)) +
         axis.ticks.length = unit(0.2, "cm"),
         legend.position = "none")
 dev.off()
+
+
 
 ##### Calculate total number of TADs for MoC analysis
 

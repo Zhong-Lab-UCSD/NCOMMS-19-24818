@@ -15,18 +15,16 @@ Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_p
 
 ## Hi-C
 
-Hi-C data analysis and visualization were mainly performed using the published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool). These scripts were used for Hi-C data analysis:
-
-- [``HUVEC_hictool.sh``](./hic_scripts/HUVEC_hictool.sh) is a bash script which contains the HiCtool commands for: pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
-- [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r) is used to calculate general Hi-C data statistics, Measure of Concordance (MoC) of TAD boundaries between samples, average interaction frequency by genomic distance curves, and proportion of reads mapped within TADs.
+- The published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool) was used for Hi-C data analysis and visualization, such as pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
+- [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r) serves to calculate general Hi-C data statistics, Measure of Concordance (MoC) of TAD boundaries between samples, average interaction frequency by genomic distance curves, and proportion of reads mapped within TADs.
 
 
 ## RNA-seq
 
 RNA-seq analysis was mainly performed using the R package [DESeq2 (v1.24.0)](https://bioconductor.org/packages/release/bioc/html/DESeq2.html). These scripts were used for RNA-seq analysis:
 
-- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job performed with [STAR (v2.5.4b)](https://github.com/alexdobin/STAR) and ``featureCounts`` from the package [Subread (v2.0.0)](http://subread.sourceforge.net/), to obtain the raw counts to input in DESeq2.
-- [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from DESeq2 to perform RNA-seq analysis.
+- [``HUVEC_RNAseq.sh``](./RNAseq_scripts/HUVEC_RNAseq.sh) is a bash script used for alignment job performed with [STAR (v2.5.4b)](https://github.com/alexdobin/STAR) and ``featureCounts`` from the package [Subread (v2.0.0)](http://subread.sourceforge.net/), to obtain the raw count data to input in DESeq2.
+- [``HUVEC_RNAseq.r``](./RNAseq_scripts/HUVEC_RNAseq.r) contains the code from DESeq2 to perform the RNA-seq analysis.
 
 
 ## scRNA-seq

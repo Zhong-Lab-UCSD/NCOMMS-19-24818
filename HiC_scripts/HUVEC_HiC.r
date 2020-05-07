@@ -35,7 +35,7 @@ dev.off()
 n_tads_control = 0
 tads_control = matrix(nrow=0,ncol=3)
 for (i in hg38_chromosomes[1:24]){
-  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/control_downsampled/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
+  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/control/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
   n_tads_control = n_tads_control+ nrow(temp_file)
   tads_control = rbind(tads_control,cbind(i,temp_file))
 }
@@ -49,7 +49,7 @@ Gr_tads_control <- GRanges(
 n_tads_day3 = 0
 tads_day3 = matrix(nrow=0,ncol=3)
 for (i in hg38_chromosomes[1:24]){
-  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day3_downsampled/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
+  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day3/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
   n_tads_day3 = n_tads_day3+ nrow(temp_file)
   tads_day3 = rbind(tads_day3,cbind(i,temp_file))
 }
@@ -63,7 +63,7 @@ Gr_tads_day3 <- GRanges(
 n_tads_day7 = 0
 tads_day7 = matrix(nrow=0,ncol=3)
 for (i in hg38_chromosomes[1:24]){
-  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day7_downsampled/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
+  temp_file = read.table(paste0("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/HiCtool/HUVEC/HiSeq/Day7/tad_analysis/HiCtool_",i,"_topological_domains.txt"), stringsAsFactors = F)
   n_tads_day7 = n_tads_day7+ nrow(temp_file)
   tads_day7 = rbind(tads_day7,cbind(i,temp_file))
 }

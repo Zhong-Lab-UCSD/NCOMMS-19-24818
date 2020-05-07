@@ -15,7 +15,7 @@ Data were processed using the [iMARGI pipeline](https://sysbio.ucsd.edu/imargi_p
 
 ## Hi-C
 
-- The published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool) was used for Hi-C data analysis and visualization, such as pre-processing raw Hi-C data, data normalization, contact heatmap and observed/expected heatmap visualization, TAD and A/B compartment analysis.
+- The published software [HiCtool (v2.2)](https://github.com/Zhong-Lab-UCSD/HiCtool) was used for Hi-C data analysis and visualization, such as data pre-processing, data normalization, contact heatmap and correlation heatmap visualization, TAD and A/B compartment analyses.
 - [``HUVEC_HiC.r``](./hic_scripts/HUVEC_HiC.r) serves to calculate general Hi-C data statistics, Measure of Concordance (MoC) of TAD boundaries between samples, average interaction frequency by genomic distance curves, and proportion of reads mapped within TADs.
 
 

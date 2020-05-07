@@ -1,0 +1,170 @@
+#!/usr/bin/env python
+import pysam, argparse, sys, numpy, HTSeq, scipy
+
+def getParser():
+	# Get command line arguments
+	parser = argparse.ArgumentParser(description="Annotate the aligned both mates of RNA-chromatin connections")
+	parser.add_argument('-b',type=str,dest="bamFiles",help="STR. Comma separated list of BAM files.")
+	parser.add_argument('-r',type=str,dest="rFile",help="GTF or BED file. Regions where reads are counted. If GTF, it must contain biotype information")
+	parser.add_argument('-e',type=str,dest="exonsOnly",help="STR. Valid only if the annotation file is GTF. It takes 'true' if counts are performed on exons only, 'false' if counts are performed over all the gene length (including introns). Default: 'false'",default="false")
+	parser.add_argument('-o',type=str,dest="oFile",help="STR. Name of output file. Default = \"output.txt\"",default="output.txt")
+
+	if len(sys.argv) == 1:
+		print >> sys.stderr,parser.print_help()
+		exit(0)
+	return parser
+#########################################################
+def getGenesIV(regionsFile):
+	# Get genomic region per region_id
+	regions_iv = {}
+	gtf_file = HTSeq.GFF_Reader( regionsFile )
+	for feature in gtf_file:
+		region_id = feature.attr["gene_id"]+"|"+feature.attr["gene_name"]+"|"+feature.attr["gene_biotype"]
+		if region_id in regions_iv:
+			if feature.iv.start < regions_iv[region_id].start:
+				regions_iv[region_id].start = feature.iv.start
+			if feature.iv.end > regions_iv[region_id].end:
+				regions_iv[region_id].end = feature.iv.end
+		else:
+			regions_iv[region_id] = HTSeq.GenomicInterval(feature.iv.chrom,feature.iv.start,feature.iv.end,feature.iv.strand) 
+	return regions_iv
+#########################################################
+def getBedIV(regionsFile):
+	# Get genomic region per region_id
+	regions_iv = {}
+	for line in open(regionsFile,"r"):
+		chrom,start,end=line.strip().split("\t")[0:3]
+		region_id=chrom+":"+start+"-"+end
+		regions_iv[region_id] = HTSeq.GenomicInterval(chrom,int(start),int(end),".") 
+	return regions_iv
+#########################################################
+def getRegions(regions_iv):	
+	regions = HTSeq.GenomicArrayOfSets("auto",stranded=False)
+	for region_id in regions_iv:
+		region_iv = regions_iv[region_id]
+		regions[region_iv] += region_id
+	return regions
+#########################################################
+def getExons(regionsFile):
+	# Get genomic region per region_id
+	regions = HTSeq.GenomicArrayOfSets("auto",stranded=False)
+	gtf_file = HTSeq.GFF_Reader( regionsFile )
+	for feature in gtf_file:
+		if feature.type!="exon": continue
+		regions[feature.iv] += feature.attr["gene_id"]+"|"+feature.attr["gene_name"]+"|"+feature.attr["gene_biotype"] 
+	return regions
+#########################################################
+def properPairFilter(rna,dna):
+    # Check that DNA but not RNA start with CC at the 5' end of the read (or GG if reversed aligned)
+    if (    ( not(rna.is_reverse) and (rna.seq[0:2]!="CC"  or rna.seq[0:2]!="CN"  or rna.seq[0:2]!="NC"  or rna.seq[0:2]!="NN" ) ) \
+    or (     rna.is_reverse  and (rna.seq[-2::]!="GG" or rna.seq[-2::]!="GN" or rna.seq[-2::]!="NG" or rna.seq[-2::]!="NN") ) )\
+    and ( (not(dna.is_reverse) and dna.seq[0:2]=="CC") or (dna.is_reverse and dna.seq[-2::]=="GG") ):
+        return True
+    else:
+        return False
+#########################################################
+def distance(rna_iv,dna_iv):
+	a,b=rna_iv.start,rna_iv.end
+	c,d=dna_iv.start,dna_iv.end
+	distance=max(d-a,b-c)
+	return distance
+#########################################################
+def main():
+	args = getParser().parse_args()
+	bamFiles = args.bamFiles.split(",")
+	regionsFile = args.rFile
+	extension=regionsFile.split(".")[-1]
+	exonsOnly = args.exonsOnly
+	oFile = args.oFile
+	if exonsOnly=='true':
+		exons_only=True
+	else:
+		exons_only=False
+	oFile = args.oFile
+	print "Getting Regions"
+	if extension=="gtf":
+		regions_iv=getGenesIV(regionsFile)
+		if exons_only:
+			regions = getExons(regionsFile) 
+		else:
+			regions = getRegions(regions_iv)
+	elif extension=="bed":	
+		regions_iv=getBedIV(regionsFile)
+		regions = getRegions(regions_iv)
+	else:
+		print "File must have 'gtf' or 'bed' extension"
+		exit(0)
+	out=open(oFile,'w')
+	print "Open bam file with reads"
+	for bamFile in bamFiles:
+		reads=pysam.Samfile( bamFile, 'rb' )
+		chroms=reads.references
+		proper_pairs_rna,proper_pairs_dna={},{}
+		# Iteration over reads
+		for n,read in enumerate(reads):
+			if n%5000000==0: print str(n)+" reads processed"
+			# Extract first M region from reads
+			if not(read.is_reverse) and read.cigar[ 0][0]==0:
+				length=read.cigar[0][1]
+				read_iv = HTSeq.GenomicInterval(chroms[read.rname],read.pos,read.pos+length,"+")
+			elif   read.is_reverse  and read.cigar[-1][0]==0:
+				length=read.cigar[-1][1]
+				#read_iv = HTSeq.GenomicInterval(chroms[read.rname],read.qend-length,read.qend,"-")
+				####read_iv = HTSeq.GenomicInterval(chroms[read.rname],read.pos+read.qend-length,read.pos+read.qend,"-")    #### deleted 20180629 ####
+				read_iv = HTSeq.GenomicInterval(chroms[read.rname],read.pos,read.pos+length,"-")    #### updated 20180629 ####
+			# Get region_ids overlapping the first M region of the current read
+			region_ids = set()
+			for iv, val in regions[read_iv].steps():
+				region_ids |= val
+			# RNA
+			if   read.is_read1 and not(read.qname in proper_pairs_rna):
+				proper_pairs_rna[read.qname]={}
+				proper_pairs_rna[read.qname]["read"]=read
+				proper_pairs_rna[read.qname]["read_iv"]=read_iv
+				proper_pairs_rna[read.qname]["region_ids"]=region_ids
+			elif read.is_read1 and    (read.qname in proper_pairs_rna):
+				proper_pairs_rna[read.qname]["region_ids"] |= region_ids
+			# DNA
+			if   read.is_read2 and not(read.qname in proper_pairs_dna):
+				proper_pairs_dna[read.qname]={}
+				proper_pairs_dna[read.qname]["read"]=read
+				proper_pairs_dna[read.qname]["read_iv"]=read_iv
+				proper_pairs_dna[read.qname]["region_ids"]=region_ids
+			elif read.is_read2 and    (read.qname in proper_pairs_dna):
+				proper_pairs_dna[read.qname]["region_ids"] |= region_ids
+			# Check if RNA and DNA have been both found
+			if (read.qname in proper_pairs_rna) and (read.qname in proper_pairs_dna):
+				rna_iv    = proper_pairs_rna[read.qname]["read_iv"]
+				dna_iv    = proper_pairs_dna[read.qname]["read_iv"]
+				# Define flag
+				flag="."
+				if   read.is_proper_pair and not( properPairFilter(proper_pairs_rna[read.qname]["read"],proper_pairs_dna[read.qname]["read"]) ): flag="properNoCCmark"
+				elif read.is_proper_pair and      properPairFilter(proper_pairs_rna[read.qname]["read"],proper_pairs_dna[read.qname]["read"])  : flag="properWithCCmark"
+				elif rna_iv.chrom==dna_iv.chrom and distance(rna_iv,dna_iv)<=1000:  flag="proximal"
+				elif rna_iv.chrom==dna_iv.chrom and distance(rna_iv,dna_iv)>1000:  flag="distal"
+				elif rna_iv.chrom!=dna_iv.chrom:                                   flag="interChrom"
+
+				if len(proper_pairs_rna[read.qname]["region_ids"])>0:
+					rna_annot = ",".join( map(str,proper_pairs_rna[read.qname]["region_ids"]) )
+				else:
+					rna_annot = "."
+				if len(proper_pairs_dna[read.qname]["region_ids"])>0:
+					dna_annot = ",".join( map(str,proper_pairs_dna[read.qname]["region_ids"]) )
+				else:
+					dna_annot = "."
+				output  = [rna_iv.chrom, rna_iv.start, rna_iv.end, rna_iv.strand ]
+				output += [dna_iv.chrom, dna_iv.start, dna_iv.end, dna_iv.strand ]
+				output += [ rna_annot, dna_annot ]
+				output += [read.qname]
+				output += [flag]
+				print >>out, "\t".join(map(str,output))
+				# Clear entry to save memory
+				del proper_pairs_rna[read.qname]
+				del proper_pairs_dna[read.qname]			
+		
+		
+		reads.close()
+	out.close()
+####################################################
+if __name__ == '__main__':
+	main()

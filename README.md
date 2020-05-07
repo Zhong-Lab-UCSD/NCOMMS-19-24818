@@ -13,7 +13,7 @@ For this part, the following software are needed:
 - [Samtools](http://www.htslib.org/)
 
 These are the scripts used for this part:
-- [``iMARGI_data_processing_main.sh``](./iMARGI_scripts/raw_data_processing/iMARGI_data_processing_main.sh) is the main script for raw data processing, from fastq files to the BEDPE file with the uniquely mapped read pairs.
+- [``iMARGI_data_processing.sh``](./iMARGI_scripts/raw_data_processing/iMARGI_data_processing.sh) is the main script for raw data processing, from fastq files to the BEDPE file with the uniquely mapped read pairs.
 - [``split_iMARGI_reads_chromosome_by_chromosome.sh``](./iMARGI_scripts/make_contact_matrices/split_iMARGI_reads_chromosome_by_chromosome.sh) is used to split the BEDPE file in 576 single BEDPE files, one per each chromosome pair.
 - [``Make_WholeGenome_Matrix.sh``](./iMARGI_scripts/make_contact_matrices/Make_WholeGenome_Matrix.sh) is used to generate all the contact matrices from the single BEDPE files, at a specified resolution and one per each chromosome pair.
 

@@ -199,6 +199,25 @@ write.table(heatmap_intensities,"/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/M
 p<-FeaturePlot(object = sc_full_data, features.plot = features_to_plot, nCol = 4,
                min.cutoff = "q10", max.cutoff = "q90", cols.use = c("white", "red"), pt.size = 0.5,
                dark.theme = TRUE, no.legend = FALSE, do.return = T)
+
+temp = lapply(p, function(x){x + theme(legend.title = element_blank(),
+                                       plot.title = element_text(size=24),
+                                       axis.text = element_text(size=16), 
+                                       axis.title = element_text(size=16),
+                                       legend.text = element_text(size=16))})
+p1 = temp[[1]]
+p2 = temp[[2]]
+p3 = temp[[3]]
+p4 = temp[[4]]
+p5 = temp[[5]]
+p6 = temp[[6]]
+p7 = temp[[7]] + ggtitle("NOS3 (eNOS)")
+p8 = temp[[8]] +  ggtitle(expression(paste("ACTA2 (", alpha, "-SMA)")))
+p9 = temp[[9]]
+p10 = temp[[10]]
+p11 = temp[[11]]
+p12 = temp[[12]]
+
 png("/mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/MARGI/RNAseq_02152019/result/Figure_1e.png", width = 15, height = 10, units = "in", res = 300)
 print(p)
 dev.off()

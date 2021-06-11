@@ -1,6 +1,6 @@
-# Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction (NCOMMS-19-24818)
+# Stress-induced RNA-chromatin interactions promote endothelial dysfunction (NCOMMS-19-24818)
 
-Repository of in-house codes and useful files used in the paper **Dynamic changes in RNA-chromatin interactome promote endothelial dysfunction**.
+Repository of in-house codes and useful files used in the paper **Stress-induced RNA-chromatin interactions promote endothelial dysfunction**.
 
 ## iMARGI
 
